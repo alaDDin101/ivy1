@@ -1,0 +1,6 @@
+@Ivy_HostAddress = http://localhost:5121
+
+GET {{Ivy_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
