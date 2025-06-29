@@ -1,4 +1,8 @@
 
+using Application.Interfaces.Repositories;
+using Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 namespace Ivy
 {
     public class Program
@@ -7,6 +11,14 @@ namespace Ivy
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
+
+
+
+            builder.Services.AddDbContext<IvyContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("IvyConnection")));
+
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
             // Add services to the container.
 
             builder.Services.AddControllers();

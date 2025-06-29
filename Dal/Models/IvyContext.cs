@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dal.Models;
+namespace Infrastructure;
 
 public partial class IvyContext : DbContext
 {
