@@ -1,6 +1,6 @@
-
-using Application.Interfaces.Repositories;
-using Infrastructure;
+using Application.Interfaces.IRepositories.Patient;
+using Ivy.Infrastructure.Persistence;
+using Ivy.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ivy
@@ -11,18 +11,12 @@ namespace Ivy
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-
             builder.Services.AddDbContext<IvyContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("IvyConnection")));
 
-            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-            // Add services to the container.
+            builder.Services.AddScoped<IPatientRepository, PetientRepository>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -34,7 +28,8 @@ namespace Ivy
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

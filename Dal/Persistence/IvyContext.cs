@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Ivy.Infrastructure.Persistence;
 
 public partial class IvyContext : DbContext
 {
