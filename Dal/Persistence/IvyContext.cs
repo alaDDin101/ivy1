@@ -34,6 +34,8 @@ public partial class IvyContext : DbContext
 
     public virtual DbSet<DoctorClinic> DoctorClinics { get; set; }
 
+    public virtual DbSet<Governorate> Governorates { get; set; }
+
     public virtual DbSet<Party> Parties { get; set; }
 
     public virtual DbSet<Patient> Patients { get; set; }
@@ -47,10 +49,11 @@ public partial class IvyContext : DbContext
     public virtual DbSet<Specialty> Specialties { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<ClinicEmplyee> ClinicEmplyees { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Ivy;User Id=sa;Password=A@123456789;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.;Database=Ivy;User Id=sa;Password=A@123456789;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,7 +77,20 @@ public partial class IvyContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Address_Clinic");
         });
+        modelBuilder.Entity<ClinicEmplyee>(entity =>
+        {
+            entity.ToTable("ClinicEmplyee");
 
+            entity.HasOne(d => d.ClinicNavigation).WithMany(p => p.ClinicEmplyees)
+                .HasForeignKey(d => d.Clinic)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ClinicEmplyee_Clinic");
+
+            entity.HasOne(d => d.PersonNavigation).WithMany(p => p.ClinicEmplyees)
+                .HasForeignKey(d => d.Person)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ClinicEmplyee_Person");
+        });
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.ToTable("Appointment");
@@ -88,6 +104,11 @@ public partial class IvyContext : DbContext
                 .HasForeignKey(d => d.DoctorClinic)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_DoctorClinic");
+
+            entity.HasOne(d => d.PatientNavigation).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.Patient)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Appointment_Patient");
 
             entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.Status)
@@ -161,12 +182,20 @@ public partial class IvyContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.GovernorateNavigation).WithMany(p => p.Cities)
+                .HasForeignKey(d => d.Governorate)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_City_Governorate");
         });
 
         modelBuilder.Entity<Clinic>(entity =>
         {
             entity.ToTable("Clinic");
 
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .IsUnicode(false);
@@ -213,6 +242,16 @@ public partial class IvyContext : DbContext
                 .HasForeignKey(d => d.Doctor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DoctorClinic_Doctor");
+        });
+
+        modelBuilder.Entity<Governorate>(entity =>
+        {
+            entity.ToTable("Governorate");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Party>(entity =>

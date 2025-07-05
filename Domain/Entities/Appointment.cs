@@ -23,5 +23,7 @@ public partial class Appointment
 
     public virtual DoctorClinic DoctorClinicNavigation { get; set; } = null!;
 
+    public virtual Patient PatientNavigation { get; set; } = null!;
+
     public virtual AppointmentStatus StatusNavigation { get; set; } = null!;
 }

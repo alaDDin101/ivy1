@@ -26,4 +26,5 @@ public partial class Person
     public virtual Party PartyNavigation { get; set; } = null!;
 
     public virtual Patient? Patient { get; set; }
+    public virtual ICollection<ClinicEmplyee> ClinicEmplyees { get; set; } = new List<ClinicEmplyee>();
 }

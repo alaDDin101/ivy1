@@ -9,5 +9,9 @@ public partial class City
 
     public string Name { get; set; } = null!;
 
+    public int Governorate { get; set; }
+
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+
+    public virtual Governorate GovernorateNavigation { get; set; } = null!;
 }

@@ -1,4 +1,5 @@
-﻿public class ApiResponse<T>
+﻿namespace Application.Commons;
+public class ApiResponse<T>
 {
     public int Code { get; set; }
     public string Message { get; set; }
@@ -9,5 +10,17 @@
         Code = code;
         Message = message;
         Data = data;
+    }
+}
+
+public class ErrorResponse
+{
+    public int Code { get; set; }
+    public string Message { get; set; }
+
+    public ErrorResponse(int code, string message)
+    {
+        Code = code;
+        Message = message;
     }
 }
