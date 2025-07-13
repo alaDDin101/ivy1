@@ -53,7 +53,7 @@ public partial class IvyContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=Ivy;User Id=sa;Password=A@123456789;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("workstation id=ivyDatabase.mssql.somee.com;packet size=4096;user id=farouq101_SQLLogin_1;pwd=a6azrp5292;data source=ivyDatabase.mssql.somee.com;persist security info=False;initial catalog=ivyDatabase;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,22 +95,30 @@ public partial class IvyContext : DbContext
         {
             entity.ToTable("Appointment");
 
-            entity.Property(e => e.Date).HasColumnType("datetime");
-            entity.Property(e => e.Reason)
-                .HasMaxLength(1000)
-                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
 
-            entity.HasOne(d => d.DoctorClinicNavigation).WithMany(p => p.Appointments)
+            entity.Property(e => e.Date)
+                .IsRequired(false); // Make nullable
+
+            entity.Property(e => e.Reason)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            entity.HasOne(d => d.DoctorClinicNavigation)
+                .WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.DoctorClinic)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_DoctorClinic");
 
-            entity.HasOne(d => d.PatientNavigation).WithMany(p => p.Appointments)
+            entity.HasOne(d => d.PatientNavigation)
+                .WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.Patient)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_Patient");
 
-            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Appointments)
+            entity.HasOne(d => d.StatusNavigation)
+                .WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.Status)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Appointment_AppointmentStatus");

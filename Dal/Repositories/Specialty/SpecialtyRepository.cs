@@ -1,62 +1,67 @@
 ﻿using Domain.Entities;
 using Ivy.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Application.Interfaces.IRepositories.Specialty;
+using Application.Dto;
 
-public class SpecialtyRepository : ISpecialtyRepository
+namespace Infrastructure.Repositories
 {
-    private readonly IvyContext _context;
-
-    public SpecialtyRepository(IvyContext context)
+    public class SpecialtyRepository : ISpecialtyRepository
     {
-        _context = context;
-    }
+        private readonly IvyContext _context;
 
-    public async Task<List<SpecialtyListDto>> GetAllAsync()
-    {
-        return await _context.Specialties
-            .Select(s => new SpecialtyListDto
+        public SpecialtyRepository(IvyContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<SpecialtyListDto>> GetAllAsync()
+        {
+            return await _context.Specialties
+                .Select(s => new SpecialtyListDto
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    EnName = s.EnName
+                }).ToListAsync();
+        }
+
+        public async Task<SpecialtyListDto> CreateAsync(CreateSpecialtyDto dto)
+        {
+            var entity = new Specialty
             {
-                Id = s.Id,
-                Name = s.Name,
-                EnName = s.EnName
-            }).ToListAsync();
-    }
+                Name = dto.Name,
+                EnName = dto.EnName
+            };
 
-    public async Task<SpecialtyListDto> CreateAsync(CreateSpecialtyDto dto)
-    {
-        var entity = new Specialty
+            _context.Specialties.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return new SpecialtyListDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                EnName = entity.EnName
+            };
+        }
+
+        public async Task<SpecialtyListDto> UpdateAsync(int id, UpdateSpecialtyDto dto)
         {
-            Name = dto.Name,
-            EnName = dto.EnName
-        };
+            var entity = await _context.Specialties.FindAsync(id);
+            if (entity == null)
+                throw new KeyNotFoundException("Specialty not found.");
 
-        _context.Specialties.Add(entity);
-        await _context.SaveChangesAsync();
+            entity.Name = dto.Name;
+            entity.EnName = dto.EnName;
 
-        return new SpecialtyListDto
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            EnName = entity.EnName
-        };
-    }
+            await _context.SaveChangesAsync();
 
-    public async Task<SpecialtyListDto> UpdateAsync(int id, UpdateSpecialtyDto dto)
-    {
-        var entity = await _context.Specialties.FindAsync(id);
-        if (entity == null)
-            throw new KeyNotFoundException("Specialty not found.");
-
-        entity.Name = dto.Name;
-        entity.EnName = dto.EnName;
-
-        await _context.SaveChangesAsync();
-
-        return new SpecialtyListDto
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            EnName = entity.EnName
-        };
+            return new SpecialtyListDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                EnName = entity.EnName
+            };
+        }
     }
 }

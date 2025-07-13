@@ -1,6 +1,11 @@
-﻿public interface ISpecialtyRepository
+﻿using Application.Dto;
+
+namespace Application.Interfaces.IRepositories.Specialty
 {
-    Task<List<SpecialtyListDto>> GetAllAsync();
-    Task<SpecialtyListDto> CreateAsync(CreateSpecialtyDto dto);
-    Task<SpecialtyListDto> UpdateAsync(int id, UpdateSpecialtyDto dto);
+    public interface ISpecialtyRepository
+    {
+        Task<List<SpecialtyListDto>> GetAllAsync();
+        Task<SpecialtyListDto> CreateAsync(CreateSpecialtyDto dto);
+        Task<SpecialtyListDto> UpdateAsync(int id, UpdateSpecialtyDto dto);
+    }
 }

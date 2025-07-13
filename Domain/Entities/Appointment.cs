@@ -9,13 +9,15 @@ public partial class Appointment
 
     public long Patient { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
 
     public string Reason { get; set; } = null!;
 
     public int Status { get; set; }
 
     public long DoctorClinic { get; set; }
+     public DateTime CreatedAt { get; set; }
+     public DateTime LastUpdatedAt { get; set; }
 
     public virtual AppointmentNote? AppointmentNote { get; set; }
 
